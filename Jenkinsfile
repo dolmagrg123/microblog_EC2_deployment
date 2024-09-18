@@ -28,10 +28,22 @@ pipeline {
                 }
             }
         }
-        stage ('OWASP FS SCAN') {
+      stage ('OWASP FS SCAN') {
             steps {
                 dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
                 dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+            }
+        }
+      stage ('Clean') {
+            steps {
+                sh '''#!/bin/bash
+                if [[ $(ps aux | grep -i "gunicorn" | tr -s " " | head -n 1 | cut -d " " -f 2) != 0 ]]
+                then
+                ps aux | grep -i "gunicorn" | tr -s " " | head -n 1 | cut -d " " -f 2 > pid.txt
+                kill $(cat pid.txt)
+                exit 0
+                fi
+                '''
             }
         }
         stage ('Deploy') {
@@ -39,8 +51,7 @@ pipeline {
                 sh '''#!/bin/bash
                 source venv/bin/activate
                 echo "Starting Gunicorn..."
-                nohup gunicorn -b :5000 -w 4 microblog:app > gunicorn.log 2>&1 &
-                echo $! > gunicorn.pid
+                gunicorn -b :5000 -w 4 microblog:app --daemon
                 '''
             }
         }
@@ -49,5 +60,8 @@ pipeline {
         always {
             echo "Pipeline completed. Gunicorn should be running in the background."
         }
+    }
+
+
     }
 }
