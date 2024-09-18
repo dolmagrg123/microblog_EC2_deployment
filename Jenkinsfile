@@ -53,7 +53,7 @@ pipeline {
 
             source venv/bin/activate
             echo "Starting Gunicorn..."
-            sudo systemctl restart gunicorn
+            sudo /bin/systemctl restart gunicorn
             '''
         }
         }
