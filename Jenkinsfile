@@ -52,8 +52,10 @@ pipeline {
         stage ('Deploy') {
             steps {
                 sh '''#!/bin/bash
-                service nginx restart
-                gunicorn -b :5000 -w 4 microblog:app
+                source venv/bin/activate
+                sudo systemctl restart nginx
+                gunicorn -b :5000 -w 4 microblog:ap
+
                 '''
             }
         }
