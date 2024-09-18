@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+  agent any
     stages {
         stage ('Build') {
             steps {
@@ -28,31 +28,31 @@ pipeline {
                 }
             }
         }
-        stage ('OWASP FS SCAN') {
+      stage ('OWASP FS SCAN') {
             steps {
                 dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
                 dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
         }
-        stage ('Clean') {
+      stage ('Clean') {
             steps {
                 sh '''#!/bin/bash
-                if [[ $(ps aux | grep -i "gunicorn" | grep -v "grep" | tr -s " " | head -n 1 | cut -d " " -f 2) != "" ]]
+                if [[ $(ps aux | grep -i "gunicorn" | tr -s " " | head -n 1 | cut -d " " -f 2) != 0 ]]
                 then
-                    ps aux | grep -i "gunicorn" | grep -v "grep" | tr -s " " | head -n 1 | cut -d " " -f 2 > pid.txt
-                    kill $(cat pid.txt)
+                ps aux | grep -i "gunicorn" | tr -s " " | head -n 1 | cut -d " " -f 2 > pid.txt
+                kill $(cat pid.txt)
+                exit 0
                 fi
                 '''
             }
         }
-        stage ('Deploy') {
+      stage ('Deploy') {
             steps {
                 sh '''#!/bin/bash
                 source venv/bin/activate
-                gunicorn -b :5000 -w 4 microblog:app > gunicorn.log 2>&1 &
+                gunicorn -b :5000 -w 4 microblog:app
                 '''
             }
         }
     }
-
 }
