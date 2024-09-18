@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+  agent any
     stages {
         stage ('Build') {
             steps {
@@ -28,16 +28,15 @@ pipeline {
                 }
             }
         }
-        stage ('OWASP FS SCAN') {
+      stage ('OWASP FS SCAN') {
             steps {
                 dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
                 dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
         }
-        stage ('Clean') {
+      stage ('Clean') {
             steps {
                 sh '''#!/bin/bash
-                # Clean up any existing Gunicorn processes if needed
                 if [[ $(ps aux | grep -i "gunicorn" | grep -v "grep" | tr -s " " | head -n 1 | cut -d " " -f 2) != "" ]]
                 then
                     ps aux | grep -i "gunicorn" | grep -v "grep" | tr -s " " | head -n 1 | cut -d " " -f 2 > pid.txt
@@ -46,15 +45,15 @@ pipeline {
                 '''
             }
         }
-        stage ('Deploy') {
+      stage ('Deploy') {
             steps {
                 sh '''#!/bin/bash
                 source venv/bin/activate
-                gunicorn -b :5000 -w 4 microblog:app > gunicorn.log 2>&1 &
-                sleep 10  # Give some time for Gunicorn to start
-                cat gunicorn.log  # Print the log to Jenkins output for debugging
-        '''
+                gunicorn -b :5000 -w 4 microblog:app &
+                echo $! > gunicorn.pid
+                '''
             }
         }
     }
+
 }
