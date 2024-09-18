@@ -50,19 +50,8 @@ pipeline {
         steps {
             sh '''#!/bin/bash
             source venv/bin/activate
-            echo "Starting Gunicorn..."
-            
-            # Create stayAlive script
-            echo '#!/bin/bash' > stayAlive.sh
-            echo 'while true; do sleep 1000; done' >> stayAlive.sh
-            chmod +x stayAlive.sh
-            
-            # Start Gunicorn with --daemon option
-            gunicorn -b :5000 -w 4 microblog:app --daemon
-            
-            # Start stayAlive script in the background
-            ./stayAlive.sh &
-            
+            echo "Starting Gunicorn..."       
+            nohup gunicorn -b :5000 -w 4 microblog:app --daemon
             # Print a message to indicate that Gunicorn has been started
             echo "Gunicorn started with PID: $(pgrep -f 'gunicorn')"
             '''
