@@ -4,7 +4,17 @@ pipeline {
         stage ('Build') {
             steps {
                 sh '''#!/bin/bash
-                <enter your code here>
+                sudo apt install python3.9 python3.9-venv python3-pip nginx
+                cd microblog_EC2_deployment/
+                python3.9 -m venv venv
+                source venv/bin/activate
+                pip install -r requirements.txt
+                pip install gunicorn pymysql cryptography
+                FLASK_APP=microblog.py
+                flask translate compile
+                flask db upgrad
+
+
                 '''
             }
         }
