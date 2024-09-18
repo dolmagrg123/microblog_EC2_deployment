@@ -1,7 +1,7 @@
 pipeline {
   agent any
     stages {
-        stage ('Build') {
+        stage('Build') {
             steps {
                 sh '''#!/bin/bash
                 python3.9 -m venv venv
@@ -12,11 +12,10 @@ pipeline {
                 export FLASK_APP=microblog.py
                 flask translate compile
                 flask db upgrade
-
                 '''
             }
         }
-        stage ('Test') {
+        stage('Test') {
             steps {
                 sh '''#!/bin/bash
                 source venv/bin/activate
@@ -29,32 +28,33 @@ pipeline {
                 }
             }
         }
-    
-        stage ('OWASP FS SCAN') {
+        stage('OWASP FS SCAN') {
             steps {
                 dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
                 dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
-                
             }
         }
-        stage ('Clean') {
+        stage('Clean') {
             steps {
                 sh '''#!/bin/bash
-                if [[ $(ps aux | grep -i "gunicorn" | grep -v "grep" | tr -s " " | head -n 1 | cut -d " " -f 2) != "" ]]
-                then
-                    ps aux | grep -i "gunicorn" | grep -v "grep" | tr -s " " | head -n 1 | cut -d " " -f 2 > pid.txt
-                    kill $(cat pid.txt)
+                PID=$(pgrep -f gunicorn)
+
+                if [ -n "$PID" ]; then
+                    echo "Stopping Gunicorn process with PID $PID"
+                    kill $PID
+                    # Optionally wait for the process to be terminated
+                    wait $PID 2>/dev/null || true
+                else
+                    echo "No Gunicorn process found."
                 fi
-                
                 '''
             }
         }
-        stage ('Deploy') {
+        stage('Deploy') {
             steps {
                 sh '''#!/bin/bash
                 source venv/bin/activate
-                gunicorn -b :5000 -w 4 microblog:app && echo $! > gunicorn.pid
-
+                gunicorn -b :5000 -w 4 microblog:app & echo $! > gunicorn.pid
                 '''
             }
         }
@@ -63,6 +63,7 @@ pipeline {
     always {
       sh '''#!/bin/bash
       if [ -f gunicorn.pid ]; then
+        echo "Stopping Gunicorn process."
         kill $(cat gunicorn.pid) || true
         rm gunicorn.pid
       fi
