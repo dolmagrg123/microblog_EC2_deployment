@@ -49,11 +49,22 @@ pipeline {
         stage ('Deploy') {
         steps {
             sh '''#!/bin/bash
+
             source venv/bin/activate
-            echo "Starting Gunicorn..."       
-            nohup gunicorn -b :5000 -w 4 microblog:app
+            echo "Starting Gunicorn..."
+
+            # Start Gunicorn with nohup to keep it running after Jenkins completes
+            nohup gunicorn -b :5000 -w 4 microblog:app > gunicorn.log 2>&1 &
+
             # Print a message to indicate that Gunicorn has been started
-            echo "Gunicorn started with PID: $(pgrep -f 'gunicorn')"
+            echo "Gunicorn started. Check gunicorn.log for details."
+
+            # Allow some time for Gunicorn to start up
+            sleep 10
+
+            # Exit this script without affecting Gunicorn
+            exit 0
+        
             '''
         }
         }
