@@ -32,15 +32,10 @@ pipeline {
                 }
             }
         }
-
-        stage('Dependency Check') {
-            steps {
-                dependencyCheck additionalArguments: '--nvd-api-key ' + env.NVD_API_KEY
-            }
-        }
     
         stage ('OWASP FS SCAN') {
             steps {
+                dependencyCheck additionalArguments: '--nvd-api-key ' + env.NVD_API_KEY
                 dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
                 dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
@@ -60,7 +55,7 @@ pipeline {
       stage ('Deploy') {
             steps {
                 sh '''#!/bin/bash
-                sudo service nginx restart
+                service nginx restart
                 gunicorn -b :5000 -w 4 microblog:app
                 '''
             }
