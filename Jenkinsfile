@@ -5,7 +5,6 @@ pipeline {
             steps {
                 sh '''#!/bin/bash
                 python3.9 -m venv venv
-                chmod +x venv/bin/python3.9 venv/bin/pip
                 source venv/bin/activate
                 pip install pip --upgrade
                 pip install -r requirements.txt
