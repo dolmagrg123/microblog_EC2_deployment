@@ -4,8 +4,6 @@ pipeline {
         stage ('Build') {
             steps {
                 sh '''#!/bin/bash
-                sudo apt-get update
-                sudo apt-get install -y python3.9 python3.9-venv python3-pip nginx
                 python3.9 -m venv venv
                 source venv/bin/activate
                 pip install pip --upgrade
