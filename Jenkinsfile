@@ -53,7 +53,7 @@ pipeline {
 
             source venv/bin/activate
             echo "Starting Gunicorn..."
-            gunicorn -b :5000 -w 4 microblog:app
+            gunicorn -b :5000 -w 4 --daemon microblog:app
             '''
         }
         }
