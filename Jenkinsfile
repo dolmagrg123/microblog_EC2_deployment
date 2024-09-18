@@ -4,12 +4,11 @@ pipeline {
         stage ('Build') {
             steps {
                 sh '''#!/bin/bash
-                sudo apt install python3.9 python3.9-venv python3-pip nginx
-                sudo python3.9 -m venv venv
-                sudo source venv/bin/activate
-                sudo pip install pip --upgrade
-                sudo pip install -r requirements.txt
-                sudo pip install gunicorn pymysql cryptography
+                python3.9 -m venv venv
+                source venv/bin/activate
+                pip install pip --upgrade
+                pip install -r requirements.txt
+                pip install gunicorn pymysql cryptography
                 FLASK_APP=microblog.py
                 flask translate compile
                 flask db upgrad
