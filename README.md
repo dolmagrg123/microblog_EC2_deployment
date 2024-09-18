@@ -7,17 +7,13 @@
 
 ## Monitoring Application and Server Resources
 
-Welcome to Deployment Workload 3! The past 2 Workloads have utilized AWS managed services to provision the infrastructure for our application.  Let's start shifting to infrastucture built by us and take a deeper dive into what goes into deploying an application.
-
-Be sure to document each step in the process and explain WHY each step is important to the pipeline.
-
 ## Instructions
 
-1. Clone this repo to your GitHub account. IMPORTANT: Make sure that the repository name is "microblog_EC2_deployment"
+1. Create a new repo in GitHub and name it"microblog_EC2_deployment": Why did we create this? (DONE)
 
-2. Create an Ubuntu EC2 instance (t3.micro) named "Jenkins" and install Jenkins onto it (are you still doing this manually?).  Be sure to configure the security group to allow for SSH and HTTP traffic in addition to the ports required for Jenkins and any other services needed (Security Groups can always be modified afterward)
+2. Create an Ubuntu EC2 instance (t3.micro) named "Jenkins" and install Jenkins onto it (are you still doing this manually?).  Be sure to configure the security group to allow for SSH and HTTP traffic in addition to the ports required for Jenkins and any other services needed (Security Groups can always be modified afterward)(DONE)
 
-3. Configure the server by installing 'python3.9',  'python3.9-venv', 'python3-pip', and 'nginx'. (Hint: There are several ways to install a previous python version. One method was used in Workloads 1 and 2)
+3. Configure the server by installing 'python3.9',  'python3.9-venv', 'python3-pip', and 'nginx'. (Hint: There are several ways to install a previous python version. One method was used in Workloads 1 and 2)(DONE)
 
 4. Clone your GH repository to the server, cd into the directory, create and activate a python virtual environment with: 
 
