@@ -1,5 +1,11 @@
+import os
+import sys
 import pytest
-from microblog import app
+
+# Add the project root directory to the Python path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
+
+from microblog import app  # Import the app now that the path is correct
 
 @pytest.fixture
 def client():
