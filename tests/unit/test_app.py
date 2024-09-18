@@ -17,4 +17,4 @@ def test_homepage(client):
     """Test if the homepage loads correctly."""
     response = client.get('/', follow_redirects=True)
     assert response.status_code == 200
-    assert b"Welcome to the microblog" in response.data
+    assert b"Sign In" in response.data
