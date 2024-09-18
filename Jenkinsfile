@@ -4,8 +4,15 @@ pipeline {
         stage ('Build') {
             steps {
                 sh '''#!/bin/bash
+                echo "Installing python venv"
                 python3.9 -m venv venv
                 source venv/bin/activate
+                pip install pip --upgrade
+                pip install -r requirements.txt
+                pip install gunicorn pymysql cryptography
+                FLASK_APP=microblog.py
+                flask translate compile
+                flask db upgrad
 
                 '''
             }
