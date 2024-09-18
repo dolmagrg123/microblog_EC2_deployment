@@ -50,10 +50,15 @@ pipeline {
             steps {
                 sh '''#!/bin/bash
                 source venv/bin/activate
-                echo "Activated"
+                echo "Starting Gunicorn..."
                 gunicorn -b :5000 -w 4 microblog:app > gunicorn.log 2>&1 &
                 echo $! > gunicorn.pid
-                echo "Running"
+                sleep 5  # Give it a moment to start up
+                if pgrep -f "gunicorn"; then
+                    echo "Gunicorn is running."
+                else
+                    echo "Gunicorn failed to start. Check gunicorn.log for errors."
+                fi
                 '''
             }
         }
