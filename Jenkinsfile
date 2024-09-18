@@ -1,8 +1,5 @@
 pipeline {
   agent any
-    environment {
-        NVD_API_KEY = '91e0dc78-5bbc-4d25-bd8c-1ae1fbd02ca6'
-    }
     stages {
         stage ('Build') {
             steps {
@@ -35,7 +32,6 @@ pipeline {
     
         stage ('OWASP FS SCAN') {
             steps {
-                dependencyCheck additionalArguments: '--nvdApiKey ' + env.NVD_API_KEY, odcInstallation: 'DP-Check'
                 dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
                 dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
                 
