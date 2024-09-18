@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+  agent any
     stages {
         stage ('Build') {
             steps {
@@ -28,38 +28,48 @@ pipeline {
                 }
             }
         }
-        stage ('OWASP FS SCAN') {
+      stage ('OWASP FS SCAN') {
             steps {
                 dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
                 dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
         }
-        stage ('Deploy') {
+      stage ('Clean') {
             steps {
                 sh '''#!/bin/bash
-                source venv/bin/activate
-                echo "Starting Gunicorn..."
-                nohup gunicorn -b :5000 -w 4 microblog:app > gunicorn.log 2>&1 &
-                echo $! > gunicorn.pid
-                sleep 5 # Wait to ensure Gunicorn starts
-                echo "Gunicorn PID: $(cat gunicorn.pid)"
-                echo "Gunicorn Logs:"
-                tail -n 10 gunicorn.log
+                if [[ $(ps aux | grep -i "gunicorn" | tr -s " " | head -n 1 | cut -d " " -f 2) != 0 ]]
+                then
+                ps aux | grep -i "gunicorn" | tr -s " " | head -n 1 | cut -d " " -f 2 > pid.txt
+                kill $(cat pid.txt)
+                exit 0
+                fi
                 '''
             }
         }
-    }
-    post {
-        always {
-            echo "Pipeline completed. Checking Gunicorn status..."
+        stage ('Deploy') {
+        steps {
             sh '''#!/bin/bash
-            if [ -f gunicorn.pid ]; then
-                echo "Gunicorn PID file exists. It should be running in the background."
-            else
-                echo "Gunicorn PID file does not exist. Gunicorn may not be running."
-                exit 1
-            fi
+            source venv/bin/activate
+            echo "Starting Gunicorn..."
+            
+            # Create stayAlive script
+            echo '#!/bin/bash' > stayAlive.sh
+            echo 'while true; do sleep 1000; done' >> stayAlive.sh
+            chmod +x stayAlive.sh
+            
+            # Start Gunicorn with --daemon option
+            gunicorn -b :5000 -w 4 microblog:app --daemon
+            
+            # Start stayAlive script in the background
+            ./stayAlive.sh &
+            
+            # Print a message to indicate that Gunicorn has been started
+            echo "Gunicorn started with PID: $(pgrep -f 'gunicorn')"
             '''
         }
+        }
+
+        }
+
     }
 }
