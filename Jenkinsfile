@@ -8,7 +8,7 @@ pipeline {
                 source venv/bin/activate
                 pip install pip --upgrade
                 pip install -r requirements.txt
-                pip install gunicorn pymysql cryptography
+                pip install gunicorn pymysql cryptography 
                 export FLASK_APP=microblog.py
                 flask translate compile
                 flask db upgrade
@@ -32,6 +32,7 @@ pipeline {
             steps {
                 dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
                 dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+                
             }
         }
       stage ('Clean') {
@@ -52,19 +53,7 @@ pipeline {
 
             source venv/bin/activate
             echo "Starting Gunicorn..."
-
-            # Start Gunicorn with nohup to keep it running after Jenkins completes
-            nohup gunicorn -b :5000 -w 4 microblog:app > gunicorn.log 2>&1 &
-
-            # Print a message to indicate that Gunicorn has been started
-            echo "Gunicorn started. Check gunicorn.log for details."
-
-            # Allow some time for Gunicorn to start up
-            sleep 10
-
-            # Exit this script without affecting Gunicorn
-            exit 0
-        
+            sudo systemctl restart gunicorn
             '''
         }
         }
