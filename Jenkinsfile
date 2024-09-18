@@ -37,10 +37,11 @@ pipeline {
       stage ('Clean') {
             steps {
                 sh '''#!/bin/bash
-                if [[ $(ps aux | grep -i "gunicorn" | grep -v "grep" | tr -s " " | head -n 1 | cut -d " " -f 2) != "" ]]
+                if [[ $(ps aux | grep -i "gunicorn" | tr -s " " | head -n 1 | cut -d " " -f 2) != 0 ]]
                 then
-                    ps aux | grep -i "gunicorn" | grep -v "grep" | tr -s " " | head -n 1 | cut -d " " -f 2 > pid.txt
-                    kill $(cat pid.txt)
+                ps aux | grep -i "gunicorn" | tr -s " " | head -n 1 | cut -d " " -f 2 > pid.txt
+                kill $(cat pid.txt)
+                exit 0
                 fi
                 '''
             }
@@ -49,11 +50,9 @@ pipeline {
             steps {
                 sh '''#!/bin/bash
                 source venv/bin/activate
-                gunicorn -b :5000 -w 4 microblog:app &
-                echo $! > gunicorn.pid
+                gunicorn -b :5000 -w 4 microblog:app
                 '''
             }
         }
     }
-
 }
