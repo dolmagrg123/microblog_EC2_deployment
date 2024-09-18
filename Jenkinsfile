@@ -59,15 +59,5 @@ pipeline {
             }
         }
     }
-  post {
-    always {
-      sh '''#!/bin/bash
-      if [ -f gunicorn.pid ]; then
-        echo "Stopping Gunicorn process."
-        kill $(cat gunicorn.pid) || true
-        rm gunicorn.pid
-      fi
-      '''
-    }
   }
 }
