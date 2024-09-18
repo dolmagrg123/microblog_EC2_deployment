@@ -4,15 +4,18 @@ pipeline {
         stage ('Build') {
             steps {
                 sh '''#!/bin/bash
-                echo "Installing python venv"
+                sudo apt-get update
+                sudo apt-get install -y python3.9 python3.9-venv python3-pip nginx
+                git clone https://github.com/dolmagrg123/microblog_EC2_deployment
+                cd microblog_EC2_deployment
                 python3.9 -m venv venv
                 source venv/bin/activate
                 pip install pip --upgrade
                 pip install -r requirements.txt
                 pip install gunicorn pymysql cryptography
-                FLASK_APP=microblog.py
+                export FLASK_APP=microblog.py
                 flask translate compile
-                flask db upgrad
+                flask db upgrade
 
                 '''
             }
@@ -51,6 +54,7 @@ pipeline {
       stage ('Deploy') {
             steps {
                 sh '''#!/bin/bash
+                sudo service nginx restart
                 gunicorn -b :5000 -w 4 microblog:app
                 '''
             }
