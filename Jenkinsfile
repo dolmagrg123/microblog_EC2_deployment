@@ -28,54 +28,41 @@ pipeline {
                 }
             }
         }
-      stage ('OWASP FS SCAN') {
+        stage ('OWASP FS SCAN') {
             steps {
                 dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
                 dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
         }
-      stage ('Clean') {
-            steps {
-                sh '''#!/bin/bash
-                if [[ $(ps aux | grep -i "gunicorn" | tr -s " " | head -n 1 | cut -d " " -f 2) != 0 ]]
-                then
-                ps aux | grep -i "gunicorn" | tr -s " " | head -n 1 | cut -d " " -f 2 > pid.txt
-                kill $(cat pid.txt)
-                exit 0
-                fi
-                '''
-            }
-        }
-      stage ('Deploy') {
+        stage ('Deploy') {
             steps {
                 sh '''#!/bin/bash
                 source venv/bin/activate
                 echo "Starting Gunicorn..."
                 gunicorn -b :5000 -w 4 microblog:app > gunicorn.log 2>&1 &
                 echo $! > gunicorn.pid
-                sleep 5  # Give it a moment to start up
-                if pgrep -f "gunicorn"; then
-                    echo "Gunicorn is running."
-                else
-                    echo "Gunicorn failed to start. Check gunicorn.log for errors."
-                fi
                 '''
             }
         }
-
-      stage ('Post-Deploy') {
+        stage ('Post-Deploy') {
             steps {
                 script {
-                    // Ensuring Gunicorn is running
+                    // Confirm Gunicorn is running and exit gracefully
                     sh '''#!/bin/bash
                     if [ -f gunicorn.pid ]; then
-                      echo "Gunicorn PID file found. Gunicorn should be running."
+                        echo "Gunicorn PID file found. Gunicorn should be running."
+                        echo "Gunicorn PID: $(cat gunicorn.pid)"
                     else
-                      echo "Gunicorn PID file not found. Gunicorn may not be running."
+                        echo "Gunicorn PID file not found. Gunicorn may not be running."
                     fi
                     '''
                 }
             }
+        }
+    }
+    post {
+        always {
+            echo "Pipeline completed. Gunicorn should be running in the background."
         }
     }
 }
