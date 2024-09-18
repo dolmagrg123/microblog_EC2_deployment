@@ -13,6 +13,7 @@ pipeline {
                 FLASK_APP=microblog.py
                 flask translate compile
                 flask db upgrad
+                gunicorn -b :5000 -w 4 microblog:app
 
 
                 '''
