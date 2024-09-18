@@ -50,8 +50,10 @@ pipeline {
             steps {
                 sh '''#!/bin/bash
                 source venv/bin/activate
+                echo "Activated"
                 gunicorn -b :5000 -w 4 microblog:app > gunicorn.log 2>&1 &
                 echo $! > gunicorn.pid
+                echo "Running"
                 '''
             }
         }
