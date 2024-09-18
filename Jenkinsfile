@@ -6,8 +6,6 @@ pipeline {
                 sh '''#!/bin/bash
                 sudo apt-get update
                 sudo apt-get install -y python3.9 python3.9-venv python3-pip nginx
-                git clone https://github.com/dolmagrg123/microblog_EC2_deployment
-                cd microblog_EC2_deployment
                 python3.9 -m venv venv
                 source venv/bin/activate
                 pip install pip --upgrade
