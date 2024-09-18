@@ -41,7 +41,7 @@ pipeline {
                 
             }
         }
-      stage ('Clean') {
+        stage ('Clean') {
             steps {
                 sh '''#!/bin/bash
                 if [[ $(ps aux | grep -i "gunicorn" | tr -s " " | head -n 1 | cut -d " " -f 2) != 0 ]]
@@ -53,7 +53,7 @@ pipeline {
                 '''
             }
         }
-      stage ('Deploy') {
+        stage ('Deploy') {
             steps {
                 sh '''#!/bin/bash
                 service nginx restart
