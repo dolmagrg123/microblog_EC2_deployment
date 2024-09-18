@@ -37,7 +37,7 @@ pipeline {
             steps {
                 dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
                 dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
-                dependencyCheck additionalArguments: '--nvd-api-key ' + env.NVD_API_KEY
+                dependencyCheck additionalArguments: '--nvd-api-key ' + env.NVD_API_KEY, odcInstallation: 'DP-Check'
             }
         }
       stage ('Clean') {
