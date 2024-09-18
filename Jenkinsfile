@@ -53,7 +53,7 @@ pipeline {
             steps {
                 sh '''#!/bin/bash
                 source venv/bin/activate
-                sudo systemctl restart nginx
+                systemctl restart nginx
                 gunicorn -b :5000 -w 4 microblog:ap
 
                 '''
