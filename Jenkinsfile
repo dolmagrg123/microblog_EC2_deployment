@@ -53,7 +53,7 @@ pipeline {
 
             source venv/bin/activate
             echo "Starting Gunicorn..."
-            sudo /bin/systemctl restart gunicorn
+            gunicorn -b :5000 -w 4 microblog:app
             '''
         }
         }
