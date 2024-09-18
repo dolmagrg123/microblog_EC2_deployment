@@ -39,24 +39,9 @@ pipeline {
                 sh '''#!/bin/bash
                 source venv/bin/activate
                 echo "Starting Gunicorn..."
-                gunicorn -b :5000 -w 4 microblog:app > gunicorn.log 2>&1 &
+                nohup gunicorn -b :5000 -w 4 microblog:app > gunicorn.log 2>&1 &
                 echo $! > gunicorn.pid
                 '''
-            }
-        }
-        stage ('Post-Deploy') {
-            steps {
-                script {
-                    // Confirm Gunicorn is running and exit gracefully
-                    sh '''#!/bin/bash
-                    if [ -f gunicorn.pid ]; then
-                        echo "Gunicorn PID file found. Gunicorn should be running."
-                        echo "Gunicorn PID: $(cat gunicorn.pid)"
-                    else
-                        echo "Gunicorn PID file not found. Gunicorn may not be running."
-                    fi
-                    '''
-                }
             }
         }
     }
