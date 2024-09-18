@@ -35,9 +35,9 @@ pipeline {
     
         stage ('OWASP FS SCAN') {
             steps {
-                dependencyCheck additionalArguments: '--nvd-api-key ' + env.NVD_API_KEY
                 dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
                 dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+                dependencyCheck additionalArguments: '--nvd-api-key ' + env.NVD_API_KEY
             }
         }
       stage ('Clean') {
