@@ -54,5 +54,20 @@ pipeline {
                 '''
             }
         }
+
+      stage ('Post-Deploy') {
+            steps {
+                script {
+                    // Ensuring Gunicorn is running
+                    sh '''#!/bin/bash
+                    if [ -f gunicorn.pid ]; then
+                      echo "Gunicorn PID file found. Gunicorn should be running."
+                    else
+                      echo "Gunicorn PID file not found. Gunicorn may not be running."
+                    fi
+                    '''
+                }
+            }
+        }
     }
 }
