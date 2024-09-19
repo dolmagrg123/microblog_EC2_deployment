@@ -186,6 +186,9 @@ We create Grafana to pull data from prometheus. And we install node exporter in 
 
 ### "SYSTEM DESIGN DIAGRAM"
 
+![System Diagram](images/Diagram.jpg)
+
+
 ### "ISSUES/TROUBLESHOOTING"
 
 One issue I encountered was in the initial build stage, the pipeline kept on failing with permission denied error message. I tried to double check my github tokens. Later I used the .gitignore to avoid all virtual env files to be pushed to github and it finally passed through the build stage.
