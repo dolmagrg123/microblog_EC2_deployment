@@ -80,7 +80,7 @@ Question: What is this command doing? You should be able to see the application 
 
 - The command starts a Gunicorn server that listens on port 5000 and uses 4 workers to handle requests.
 
-- When you enter the server's public IP address into a browser, the browser sends a request to the server's IP address on port 5000.
+- When we enter the server's public IP address into a browser, the browser sends a request to the server's IP address on port 5000.
 
 - Gunicorn receives this request, processes it using the application defined in microblog.py, and sends the response back to the browser.
 
@@ -88,9 +88,47 @@ Question: What is this command doing? You should be able to see the application 
 
   a. The build stage should include all of the commands required to prepare the environment for the application.  This includes creating the virtual environment and installing all the dependencies, setting variables, and setting up the databases.
 
-  b. The test stage will run pytest.  Create a python script called test_app.py to run a unit test of the application source code. IMPORTANT: Put the script in a directory called "tests/unit/" of the GitHub repository. Note: The complexity of the script is up to you.  Work within your limits.  (Hint: If you don't know where to start, try testing the homepage or log in page.  Want to challenge yourself with something more complicated? Sky's the limit!)
+  ```
+        stage ('Build') {
+            steps {
+                sh '''#!/bin/bash
+                python3.9 -m venv venv
+                source venv/bin/activate
+                pip install pip --upgrade
+                pip install -r requirements.txt
+                pip install gunicorn pymysql cryptography 
+                export FLASK_APP=microblog.py
+                flask translate compile
+                flask db upgrade
+                '''
+            }
+```
+
+  b. The test stage will run pytest.  Create a python script called test_app.py to run a unit test of the application source code. IMPORTANT: Put the script in a directory called "tests/unit/" of the GitHub repository.
+    ```
+          stage ('Test') {
+            steps {
+                sh '''#!/bin/bash
+                source venv/bin/activate
+                py.test ./tests/unit/ --verbose --junit-xml test-reports/results.xml
+                '''
+            }
+    ```
 
   c. The deploy stage will run the commands required to deploy the application so that it is available to the internet. 
+
+    ```
+        stage ('Deploy') {
+        steps {
+            sh '''#!/bin/bash
+
+            source venv/bin/activate
+            echo "Starting Gunicorn..."
+            gunicorn -b :5000 -w 4 --daemon microblog:app
+            '''
+        }
+        }
+    ```
 
   d. There is also a 'clean' and an 'WASP FS SCAN' stage.  What are these for?
   
