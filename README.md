@@ -180,6 +180,7 @@ This plugin is to scan the dependencies of our program. It runs during our Jenki
 
 We create Grafana to pull data from prometheus. And we install node exporter in the first EC2(Jenkins) to collect data.
 ![Grafana](images/Grafana.jpg)
+![Grafana](images/individual_monitoring.jpg)
 ![Prometheus](images/Prometheus.jpg)
 ![node_exporter](images/node_exporter.jpg)
 
