@@ -2,7 +2,21 @@
 ---
 ## Monitoring Application and Server Resources
 
-## Instructions
+## Table Of Contents
+
+- [PURPOSE](#purpose)
+- [STEPS And Why each was Necessary](#the-steps-taken-and-why-each-was-necessaryimportant)
+- [SYSTEM DESIGN DIAGRAM](#system-design-diagram)
+- [ISSUES and TROUBLESHOOTING](#issuestroubleshooting)
+- [OPTIMIZATION](#optimization)
+- [CONCLUSION](#conclusion)
+
+
+### PURPOSE
+
+The purpose of this project to automate the deployment of an application using Jenkins(CI/CD) and monitor the application using monitoring tools like Prometheus and Grafana.
+
+### The "STEPS" taken (and why each was necessary/important)
 
 1. We create a new repo called "microblog_EC2_deployment" to store our code and have version control.
 
@@ -134,6 +148,11 @@ Question: What is this command doing? You should be able to see the application 
 ```
 
   d. There is also a 'clean' and an 'WASP FS SCAN' stage.  What are these for?
+        Clean stage checks if any gunicorn is running and terminates it, so we can deploy it during the deploy stage.
+        OWASP FS SCAN : Scans project dependencies to look for any vulnerability and publish the result of the scan
+
+
+
   
 11. In Jenkins, install the "OWASP Dependency-Check" plug-in
 
@@ -142,6 +161,9 @@ Question: What is this command doing? You should be able to see the application 
  	b. Then configure it by navigating to "Manage Jenkins" > "Tools" > "Add Dependency-Check > Name: "DP-Check" > check "install automatically" > Add Installer: "Install from github.com"
 
 Question: What is this plugin for?  What is it doing?  When does it do it?  Why is it important?
+
+This plugin is to scan the dependencies of our program. It runs during our Jenkins pipeline. It is important to keep our project secure and to make sure the vulnerabilites are not deployed to production.
+
 
 12. Create a MultiBranch Pipeline and run the build.  IMPORTANT: Make sure the name of the pipeline is: "workload_3".
 
@@ -153,17 +175,20 @@ Question: What is this plugin for?  What is it doing?  When does it do it?  Why 
 
 14. After the application has successfully deployed, create another EC2 (t3.micro) called "Monitoring".  Install Prometheus and Grafana and configure it to monitor the activity on the server running the application. 
 
-15. Document! All projects have documentation so that others can read and understand what was done and how it was done. Create a README.md file in your repository that describes:
+We create Grafana to pull data from prometheus. And we install node exporter in the first EC2(Jenkins) to collect data.
+![Grafana](images/Grafana.jpg)
+![Prometheus](images/Prometheus.jpg)
+![node_exporter](images/node_exporterjpg)
 
-	  a. The "PURPOSE" of the Workload,
 
-  	b. The "STEPS" taken (and why each was necessary/important),
-      Question: Were steps 4-9 absolutely necessary for the CICD pipeline? Why or why not?
-    
-  	c. A "SYSTEM DESIGN DIAGRAM" that is created in draw.io (IMPORTANT: Save the diagram as "Diagram.jpg" and upload it to the root directory of the GitHub repo.),
+### "SYSTEM DESIGN DIAGRAM"
 
-	  d. "ISSUES/TROUBLESHOOTING" that may have occured,
+### "ISSUES/TROUBLESHOOTING"
 
-  	e. An "OPTIMIZATION" section for that answers the question: What are the advantages of provisioning ones own resources over using a managed service like Elastic Beanstalk?  Could the infrastructure created in this workload be considered that of a "good system"?  Why or why not?  How would you optimize this infrastructure to address these issues?
+One issue I encountered was in the initial build stage, the pipeline kept on failing with permission denied error message. I tried to double check my github tokens.
 
-    f. A "CONCLUSION" statement as well as any other sections you feel like you want to include.
+### "OPTIMIZATION"
+
+### "CONCLUSION"
+
+

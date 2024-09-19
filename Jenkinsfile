@@ -47,15 +47,10 @@ pipeline {
                 '''
             }
         }
-        stage ('Deploy') {
-        steps {
-            sh '''#!/bin/bash
-
-            source venv/bin/activate
-            echo "Starting Gunicorn..."
-            gunicorn -b :5000 -w 4 --daemon microblog:app
-            '''
-        }
+        stage('Deploy') {
+            steps {
+                sh 'sudo systemctl restart microblog'
+            }
         }
 
         }
