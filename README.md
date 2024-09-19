@@ -46,7 +46,8 @@ $pip install gunicorn pymysql cryptography
 ```
 FLASK_APP=microblog.py
 ```
-Question: What is this command doing?
+
+This is used to set the environment variable FLASK_APP to the value microblog.py. This tells Flask which application to run when executing Flask commands, such as flask run.
 
 7. Run the following commands: 
 
@@ -65,13 +66,23 @@ proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 }
 ```
 Question: What is this config file/NginX responsible for?
+This Nginx configuration sets up Nginx to act as a reverse proxy, forwarding requests to a backend service running on port 5000 and preserving important request headers
 
 9. Run the following command and then put the servers public IP address into the browser address bar
 
 ```
 gunicorn -b :5000 -w 4 microblog:app
 ```
+![Application](images/application.jpg)
+
+
 Question: What is this command doing? You should be able to see the application running in the browser but what is happening "behind the scenes" when the IP address is put into the browser address bar?
+
+- The command starts a Gunicorn server that listens on port 5000 and uses 4 workers to handle requests.
+
+- When you enter the server's public IP address into a browser, the browser sends a request to the server's IP address on port 5000.
+
+- Gunicorn receives this request, processes it using the application defined in microblog.py, and sends the response back to the browser.
 
 10. If all of the above works, stop the application by pressing ctrl+c.  Now it's time to automate the pipeline.  Modify the Jenkinsfile and fill in the commands for the build and deploy stages.
 
