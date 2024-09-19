@@ -173,22 +173,38 @@ This plugin is to scan the dependencies of our program. It runs during our Jenki
     
     Hint pt 2: NOW does the pipeline complete? Is the application running?  If not: What happened to that RUNNING PROCESS after the deploy STAGE COMPLETES? (stayAlive)
 
+![Final Pipeline](images/final_pipeline.jpg)
+  
+
 14. After the application has successfully deployed, create another EC2 (t3.micro) called "Monitoring".  Install Prometheus and Grafana and configure it to monitor the activity on the server running the application. 
 
 We create Grafana to pull data from prometheus. And we install node exporter in the first EC2(Jenkins) to collect data.
 ![Grafana](images/Grafana.jpg)
 ![Prometheus](images/Prometheus.jpg)
-![node_exporter](images/node_exporterjpg)
+![node_exporter](images/node_exporter.jpg)
 
 
 ### "SYSTEM DESIGN DIAGRAM"
 
 ### "ISSUES/TROUBLESHOOTING"
 
-One issue I encountered was in the initial build stage, the pipeline kept on failing with permission denied error message. I tried to double check my github tokens.
+One issue I encountered was in the initial build stage, the pipeline kept on failing with permission denied error message. I tried to double check my github tokens. Later I used the .gitignore to avoid all virtual env files to be pushed to github and it finally passed through the build stage.
+
+Another issue was during the deploy stage, the pipeline would not stop automatically because gunicorn was still running. I tried adding daemon to the command, which ended the pipeline but the gunicorn also stopped running with the pipeline. For this issue, I had to run gunicorn as a separate service and use jenkins to restart gunicorn after every deployment.
+
+While running gunicorn as a separate service, I added the wrong path, and when I added different permissions to Jenkins, it completely broke all the permissions in my EC2. I had to restart a new EC2 as I was unable to resolve this issue.
 
 ### "OPTIMIZATION"
 
+  - We can try to implement autoscaling so our instance dont run out of resource
+  - We could use load balancer for heavy traffic.
+  - I could use script to automate Jenkins and other installations.
+  - We could use NVD API Key to make sure the pipeline runs faster
+
 ### "CONCLUSION"
+
+Through this workload we are able to automate deployment of a Flask application using Jenkins.
+
+
 
 
