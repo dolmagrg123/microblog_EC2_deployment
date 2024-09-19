@@ -105,6 +105,7 @@ Question: What is this command doing? You should be able to see the application 
 ```
 
   b. The test stage will run pytest.  Create a python script called test_app.py to run a unit test of the application source code. IMPORTANT: Put the script in a directory called "tests/unit/" of the GitHub repository.
+    
     ```
           stage ('Test') {
             steps {
@@ -113,6 +114,7 @@ Question: What is this command doing? You should be able to see the application 
                 py.test ./tests/unit/ --verbose --junit-xml test-reports/results.xml
                 '''
             }
+
     ```
 
   c. The deploy stage will run the commands required to deploy the application so that it is available to the internet. 
@@ -128,6 +130,7 @@ Question: What is this command doing? You should be able to see the application 
             '''
         }
         }
+        
     ```
 
   d. There is also a 'clean' and an 'WASP FS SCAN' stage.  What are these for?
