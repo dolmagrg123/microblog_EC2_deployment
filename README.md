@@ -1,19 +1,31 @@
 # Kura Labs Cohort 5- Deployment Workload 3
-
-
 ---
-
-
-
 ## Monitoring Application and Server Resources
 
 ## Instructions
 
-1. Create a new repo in GitHub and name it"microblog_EC2_deployment": Why did we create this? (DONE)
+1. We create a new repo called "microblog_EC2_deployment" to store our code and have version control.
 
-2. Create an Ubuntu EC2 instance (t3.micro) named "Jenkins" and install Jenkins onto it (are you still doing this manually?).  Be sure to configure the security group to allow for SSH and HTTP traffic in addition to the ports required for Jenkins and any other services needed (Security Groups can always be modified afterward)(DONE)
+2. We create Ubuntu EC2 instance (t3.medium) named "Jenkins" and install Jenkins onto it  We create security group for SSH and HTTP traffic in addition to the ports required for Jenkins and any other services needed.
 
-3. Configure the server by installing 'python3.9',  'python3.9-venv', 'python3-pip', and 'nginx'. (Hint: There are several ways to install a previous python version. One method was used in Workloads 1 and 2)(DONE)
+![Security Group](images/Security_groups.jpg)
+
+```
+sudo apt update && sudo apt install fontconfig openjdk-17-jre software-properties-common && sudo add-apt-repository ppa:deadsnakes/ppa && sudo apt install python3.7 python3.7-venv
+
+echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc]" https://pkg.jenkins.io/debian-stable binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+sudo apt-get update
+sudo apt-get install jenkins
+sudo systemctl start jenkins
+sudo systemctl status jenkins
+
+```
+
+3. Configure the server by installing 'python3.9',  'python3.9-venv', 'python3-pip', and 'nginx'
+
+```
+sudo apt install python3.9 python3.9-venv python3-pip nginx
+```
 
 4. Clone your GH repository to the server, cd into the directory, create and activate a python virtual environment with: 
 
